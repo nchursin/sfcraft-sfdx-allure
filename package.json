@@ -48,8 +48,23 @@
     "commands": "./lib/commands",
     "bin": "sfdx",
     "topics": {
-      "hello": {
-        "description": "Commands to say hello."
+      "sfcraft": {
+        "external": true,
+        "subtopics": {
+          "allure": {
+            "description": "Create Allure reports",
+            "longDescription": "Commands to create Allure reports from Salesforce test reports",
+            "subtopics": {
+              "apex": {
+                "subtopics": {
+                  "report": {
+                    "description": "Generate allure report from Apex test run"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "devPlugins": [
@@ -65,7 +80,7 @@
     "compile": "rm -rf lib && tsc -b",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
-    "debug": "NODE_OPTIONS=--inspect-brk bin/run sfcraft:allure:apex:report",
+    "debug": "NODE_OPTIONS=--inspect-brk bin/run",
     "predebug": "yarn compile"
   }
 }
