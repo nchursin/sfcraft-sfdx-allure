@@ -1,8 +1,9 @@
 // import { flags, SfdxCommand } from "@salesforce/command";
-import { flags, SfdxCommand } from "@salesforce/command";
+import { SfdxCommand } from "@salesforce/command";
 import { Messages } from "@salesforce/core";
 import { AnyJson } from "@salesforce/ts-types";
-import Report from "@salesforce/plugin-apex/lib/commands/force/apex/test/report";
+import SfdxReport from "@salesforce/plugin-apex/lib/commands/force/apex/test/report";
+import * as rimraf from "rimraf";
 // import Run from "@salesforce/plugin-apex/lib/commands/force/apex/test/run";
 
 // Initialize Messages with the current plugin directory
@@ -12,32 +13,34 @@ Messages.importMessagesDirectory(__dirname);
 // or any library that is using the messages framework can also be loaded this way.
 const messages = Messages.loadMessages("sfdx-allure", "org");
 
+export const tempDirName = "sfcraft-allure-tmp";
+
 export default class AllureReport extends SfdxCommand {
-  public static description = messages.getMessage("commandDescription");
+  public static readonly description = messages.getMessage(
+    "commandDescription"
+  );
+
+  protected sfdxReportConfig: any = {};
+  protected reportCmd = new SfdxReport([], this.sfdxReportConfig);
 
   protected static flagsConfig: any = {
-    testrunid: flags.string({
-      char: "i",
-      description: "test run id",
-    }),
+    testrunid: (SfdxReport as any).flagsConfig.testrunid,
+    outputdir: (SfdxReport as any).flagsConfig.outputdir,
   };
-
-  // protected static flagsConfig: any = (() => {
-  //   const srcConfig = Report.flagsConfig;
-  //   delete srcConfig.json;
-  //   delete srcConfig.resultformat;
-  //   delete srcConfig.codecoverage;
-  //   return srcConfig;
-  // })();
 
   public static examples = [`$ sfdx sfcraft:allure:report -i 7070000000001`];
 
   public async run(): Promise<AnyJson> {
-    const config: any = {};
-    const reportCmd = new Report(["-i", this.flags.testrunid], config);
-    // reportCmd.
+    this.reportCmd.argv = [
+      "-i",
+      this.flags.testrunid,
+      "--outputdir",
+      "sfcraft-allure-tmp",
+    ];
 
-    return reportCmd._run();
-    // return {};
+    await this.reportCmd._run();
+
+    rimraf.sync("sfcraft-allure-tmp");
+    return;
   }
 }
