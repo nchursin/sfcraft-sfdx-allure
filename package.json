@@ -12,7 +12,10 @@
     "@salesforce/core": "^2",
     "@salesforce/plugin-apex": "^0.1.21",
     "@types/rimraf": "^3.0.0",
+    "@types/sinon-chai": "^3.2.5",
+    "node-run-cmd": "^1.0.1",
     "rimraf": "^3.0.2",
+    "sinon-chai": "^3.6.0",
     "tslib": "^1"
   },
   "devDependencies": {

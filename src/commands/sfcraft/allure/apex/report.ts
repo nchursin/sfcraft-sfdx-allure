@@ -1,10 +1,11 @@
 // import { flags, SfdxCommand } from "@salesforce/command";
-import { SfdxCommand } from "@salesforce/command";
+import { FlagsConfig, SfdxCommand } from "@salesforce/command";
 import { Messages } from "@salesforce/core";
 import { AnyJson } from "@salesforce/ts-types";
 import SfdxReport from "@salesforce/plugin-apex/lib/commands/force/apex/test/report";
 import * as rimraf from "rimraf";
-// import Run from "@salesforce/plugin-apex/lib/commands/force/apex/test/run";
+import * as fs from "fs";
+import * as cmd from "node-run-cmd";
 
 // Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
@@ -23,9 +24,13 @@ export default class AllureReport extends SfdxCommand {
   protected sfdxReportConfig: any = {};
   protected reportCmd = new SfdxReport([], this.sfdxReportConfig);
 
-  protected static flagsConfig: any = {
+  protected static flagsConfig: FlagsConfig = {
     testrunid: (SfdxReport as any).flagsConfig.testrunid,
-    outputdir: (SfdxReport as any).flagsConfig.outputdir,
+    outputdir: {
+      ...(SfdxReport as any).flagsConfig.outputdir,
+      char: "o",
+      default: "sfallure",
+    },
   };
 
   public static examples = [`$ sfdx sfcraft:allure:report -i 7070000000001`];
@@ -35,12 +40,23 @@ export default class AllureReport extends SfdxCommand {
       "-i",
       this.flags.testrunid,
       "--outputdir",
-      "sfcraft-allure-tmp",
+      tempDirName,
+      "-r",
+      "json",
+      "-c",
     ];
 
     await this.reportCmd._run();
 
-    rimraf.sync("sfcraft-allure-tmp");
+    fs.renameSync(
+      `${tempDirName}/test-result-${this.flags.testrunid}.json`,
+      `${tempDirName}/test-results.json`
+    );
+
+    await cmd.run(`allure generate ${tempDirName} -o ${this.flags.outputdir}`);
+
+    rimraf.sync(tempDirName);
+
     return;
   }
 }

@@ -3,33 +3,45 @@ import SfdxReport from "@salesforce/plugin-apex/lib/commands/force/apex/test/rep
 import Report, {
   tempDirName,
 } from "../../../../../src/commands/sfcraft/allure/apex/report";
+import * as chai from "chai";
 import { expect } from "chai";
-import { SinonSpy, createSandbox } from "sinon";
+import * as sinonChai from "sinon-chai";
+import { SinonSpy, createSandbox, match } from "sinon";
 import { SfdxCommand } from "@salesforce/command";
+import * as cmd from "node-run-cmd";
 import * as rimraf from "rimraf";
+import * as fs from "fs";
+
+chai.should();
+chai.use(sinonChai);
+
+const flushPromises = () => new Promise((resolve) => setImmediate(resolve));
+
+let commandUnderTest;
+const config: any = {};
+
+const sfdxReportMock: SfdxReport = new SfdxReport([], config);
+
+const testRunId = "testRunId";
+const defaultArgs = `-i ${testRunId}`;
+
+const asSpy = (fun) => fun as SinonSpy;
+
+const runCommand = (cmd: SfdxCommand, args = defaultArgs) => {
+  cmd.argv = args.split(" ");
+  return cmd._run();
+};
+
+const sandbox = createSandbox();
 
 describe("sfcraft:allure:apex:report", () => {
-  let commandUnderTest;
-  const config: any = {};
-
-  const sfdxReportMock: SfdxReport = new SfdxReport([], config);
-
-  const defaultArgs = "-i testRunId";
-
-  const asSpy = (fun) => fun as SinonSpy;
-
-  const runCommand = (cmd: SfdxCommand, args = defaultArgs) => {
-    cmd.argv = args.split(" ");
-    return cmd._run();
-  };
-
-  const sandbox = createSandbox();
-
   beforeEach(() => {
     commandUnderTest = new Report([], config);
     (commandUnderTest as any).reportCmd = sfdxReportMock;
-    sfdxReportMock.run = sandbox.spy();
-    sandbox.spy(rimraf, "sync");
+    sfdxReportMock.run = sandbox.stub();
+    sandbox.stub(rimraf, "sync");
+    sandbox.stub(fs, "renameSync");
+    sandbox.stub(cmd, "run");
   });
 
   afterEach(() => {
@@ -41,10 +53,10 @@ describe("sfcraft:allure:apex:report", () => {
 
     await runCommand(commandUnderTest, `-i ${testRunId}`);
 
+    asSpy(sfdxReportMock.run).should.have.been.called;
     expect((sfdxReportMock as any).flags).to.contain({
       testrunid: testRunId,
     });
-    expect(asSpy(sfdxReportMock.run).called).to.be.true;
   });
 
   it("stores force:apex:test:report results in sfcraft-allure-tmp folder", async () => {
@@ -54,12 +66,77 @@ describe("sfcraft:allure:apex:report", () => {
     });
   });
 
+  it("stores force:apex:test:report results as json with coverage", async () => {
+    await runCommand(commandUnderTest);
+    expect((sfdxReportMock as any).flags).to.contain({
+      json: true,
+      codecoverage: true,
+    });
+  });
+
   it("removes sfcraft-allure-tmp after execution", async () => {
     await runCommand(commandUnderTest);
 
-    expect(asSpy(rimraf.sync).called).to.be.true;
-    expect(asSpy(rimraf.sync).calledWith(tempDirName)).to.be.true;
-    expect(asSpy(rimraf.sync).calledAfter(asSpy(sfdxReportMock.run))).to.be
-      .true;
+    asSpy(rimraf.sync).should.have.been.calledOnce;
+    asSpy(rimraf.sync).should.have.been.calledWith(tempDirName);
+    await flushPromises();
+  });
+
+  it(`moves ${tempDirName}/test-result-${testRunId}.json to ${tempDirName}/test-results.json`, async () => {
+    await runCommand(commandUnderTest);
+
+    asSpy(fs.renameSync).should.have.been.calledWith(
+      `${tempDirName}/test-result-${testRunId}.json`,
+      `${tempDirName}/test-results.json`
+    );
+    asSpy(fs.renameSync).should.have.been.calledAfter(
+      asSpy(sfdxReportMock.run)
+    );
+    asSpy(fs.renameSync).should.have.been.calledBefore(asSpy(rimraf.sync));
+  });
+
+  it(`launches allure on ${tempDirName}`, async () => {
+    await runCommand(commandUnderTest);
+
+    asSpy(cmd.run)
+      .should.have.been.calledOnce.calledWithMatch(
+        match(`allure generate ${tempDirName}`)
+      )
+      .calledAfter(asSpy(fs.renameSync))
+      .calledBefore(asSpy(rimraf.sync));
+  });
+
+  it("outputs allure files to outputdir", async () => {
+    const outputDir = "allureDir";
+    await runCommand(commandUnderTest, `${defaultArgs} -o ${outputDir}`);
+
+    asSpy(cmd.run).should.have.been.calledWithMatch((value: string) =>
+      value.includes(`-o ${outputDir}`)
+    );
+  });
+
+  it("does not change force:apex:test:report when output dir is specified", async () => {
+    const outputDir = "allureDir";
+    await runCommand(commandUnderTest, `${defaultArgs} -o ${outputDir}`);
+
+    expect((sfdxReportMock as any).flags).to.contain({
+      outputdir: tempDirName,
+    });
+  });
+
+  it("defaults output to 'sfallure' folder", async () => {
+    await runCommand(commandUnderTest);
+
+    const defaultOutputDir = "sfallure";
+    await runCommand(commandUnderTest);
+
+    asSpy(cmd.run).should.have.been.calledWithMatch((value: string) =>
+      value.includes(`-o ${defaultOutputDir}`)
+    );
+  });
+
+  it("verifies allure installtion before anything else", async () => {
+    // throw error
+    await runCommand(commandUnderTest);
   });
 });
