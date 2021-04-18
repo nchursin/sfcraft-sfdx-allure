@@ -20,9 +20,7 @@ export default class AllureReport extends SfdxCommand {
   public static readonly description = messages.getMessage(
     "commandDescription"
   );
-
-  protected sfdxReportConfig: any = {};
-  protected reportCmd = new SfdxReport([], this.sfdxReportConfig);
+  public static examples = [`$ sfdx sfcraft:allure:report -i 7070000000001`];
 
   protected static flagsConfig: FlagsConfig = {
     testrunid: (SfdxReport as any).flagsConfig.testrunid,
@@ -33,7 +31,8 @@ export default class AllureReport extends SfdxCommand {
     },
   };
 
-  public static examples = [`$ sfdx sfcraft:allure:report -i 7070000000001`];
+  protected sfdxReportConfig: any = {};
+  protected reportCmd = new SfdxReport([], this.sfdxReportConfig);
 
   public async run(): Promise<AnyJson> {
     const [error] = await cmd.run("allure --version");
