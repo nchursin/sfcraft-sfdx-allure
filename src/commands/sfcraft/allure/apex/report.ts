@@ -36,6 +36,11 @@ export default class AllureReport extends SfdxCommand {
   public static examples = [`$ sfdx sfcraft:allure:report -i 7070000000001`];
 
   public async run(): Promise<AnyJson> {
+    const [error] = await cmd.run("allure --version");
+    if (error) {
+      throw new Error("Allure not found. Please verify allure installation");
+    }
+
     this.reportCmd.argv = [
       "-i",
       this.flags.testrunid,
@@ -44,6 +49,8 @@ export default class AllureReport extends SfdxCommand {
       "-r",
       "json",
       "-c",
+      "--loglevel",
+      "fatal",
     ];
 
     await this.reportCmd._run();

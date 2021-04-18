@@ -6,12 +6,14 @@ import Report, {
 import * as chai from "chai";
 import { expect } from "chai";
 import * as sinonChai from "sinon-chai";
-import { SinonSpy, createSandbox, match } from "sinon";
+import * as chaiAsPromised from "chai-as-promised";
+import { SinonSpy, createSandbox, match, SinonStub } from "sinon";
 import { SfdxCommand } from "@salesforce/command";
 import * as cmd from "node-run-cmd";
 import * as rimraf from "rimraf";
 import * as fs from "fs";
 
+chai.use(chaiAsPromised);
 chai.should();
 chai.use(sinonChai);
 
@@ -42,6 +44,7 @@ describe("sfcraft:allure:apex:report", () => {
     sandbox.stub(rimraf, "sync");
     sandbox.stub(fs, "renameSync");
     sandbox.stub(cmd, "run");
+    (cmd.run as SinonStub).withArgs("allure --version").returns([0]);
   });
 
   afterEach(() => {
@@ -69,7 +72,7 @@ describe("sfcraft:allure:apex:report", () => {
   it("stores force:apex:test:report results as json with coverage", async () => {
     await runCommand(commandUnderTest);
     expect((sfdxReportMock as any).flags).to.contain({
-      json: true,
+      resultformat: "json",
       codecoverage: true,
     });
   });
@@ -99,11 +102,11 @@ describe("sfcraft:allure:apex:report", () => {
     await runCommand(commandUnderTest);
 
     asSpy(cmd.run)
-      .should.have.been.calledOnce.calledWithMatch(
-        match(`allure generate ${tempDirName}`)
-      )
-      .calledAfter(asSpy(fs.renameSync))
-      .calledBefore(asSpy(rimraf.sync));
+      .should.have.been.calledTwice.and.calledAfter(asSpy(fs.renameSync))
+      .and.calledBefore(asSpy(rimraf.sync));
+    asSpy(cmd.run).lastCall.should.have.been.calledWith(
+      match(`allure generate ${tempDirName}`)
+    );
   });
 
   it("outputs allure files to outputdir", async () => {
@@ -135,8 +138,24 @@ describe("sfcraft:allure:apex:report", () => {
     );
   });
 
-  it("verifies allure installtion before anything else", async () => {
-    // throw error
-    await runCommand(commandUnderTest);
+  it("verifies allure installtion before anything else", async (done) => {
+    const allureNotFoundError = {
+      ...new Error(),
+      errno: "ENOENT",
+      code: "ENOENT",
+      syscall: "spawn allures",
+      path: "allures",
+      spawnargs: ["--version"],
+    };
+    (cmd.run as SinonStub)
+      .withArgs("allure --version")
+      .returns([allureNotFoundError]);
+
+    (commandUnderTest.run() as Promise<unknown>).should.eventually.be
+      .rejectedWith(
+        Error,
+        "Allure not found. Please verify allure installation"
+      )
+      .notify(done);
   });
 });
