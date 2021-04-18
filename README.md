@@ -34,10 +34,10 @@ USAGE
 
 ## `sfdx sfcraft:allure:apex:report -i <string> [-o <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
-print a greeting and your org IDs
+Generates allure report from Apex test run
 
 ```
-print a greeting and your org IDs
+Generates allure report from Apex test run
 
 USAGE
   $ sfdx sfcraft:allure:apex:report -i <string> [-o <string>] [--json] [--loglevel 
