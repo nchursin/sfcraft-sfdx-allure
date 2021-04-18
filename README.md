@@ -53,5 +53,5 @@ EXAMPLE
   $ sfdx sfcraft:allure:report -i 7070000000001
 ```
 
-_See code: [lib/commands/sfcraft/allure/apex/report.js](https://github.com/nchursin/sfdx-allure/blob/v0.0.0/lib/commands/sfcraft/allure/apex/report.js)_
+_See code: [lib/commands/sfcraft/allure/apex/report.js](https://github.com/nchursin/sfdx-allure/blob/v0.1.0/lib/commands/sfcraft/allure/apex/report.js)_
 <!-- commandsstop -->
