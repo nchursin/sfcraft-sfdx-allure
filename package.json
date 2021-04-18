@@ -1,5 +1,5 @@
 {
-  "name": "sfdx-allure",
+  "name": "@sfcraft/allure",
   "description": "SFDX plugin to generate Allure reports",
   "version": "0.0.0",
   "author": "Nikita Chursin @nchursin",
@@ -79,7 +79,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "nchursin/sfdx-allure",
+  "repository": "https://github.com/nchursin/sfdx-allure",
   "scripts": {
     "lint": "tslint --project . --config tslint.json --format stylish",
     "postpack": "rm -f oclif.manifest.json",

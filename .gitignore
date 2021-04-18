@@ -12,3 +12,4 @@ oclif.manifest.json
 sfallure/
 
 sfdx-allure-*.tgz
+@sfcraft/allure-*.tgz
