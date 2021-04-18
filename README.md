@@ -30,7 +30,35 @@ USAGE
 ```
 <!-- usagestop -->
 <!-- commands -->
+* [`sfdx sfcraft:allure:apex:report -i <string> [-o <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-sfcraftallureapexreport--i-string--o-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
+## `sfdx sfcraft:allure:apex:report -i <string> [-o <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+
+print a greeting and your org IDs
+
+```
+print a greeting and your org IDs
+
+USAGE
+  $ sfdx sfcraft:allure:apex:report -i <string> [-o <string>] [--json] [--loglevel 
+  trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+
+OPTIONS
+  -i, --testrunid=testrunid                                                         (required) the ID of the test run
+
+  -o, --outputdir=outputdir                                                         [default: sfallure] directory to
+                                                                                    store test result files
+
+  --json                                                                            format output as json
+
+  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
+                                                                                    this command invocation
+
+EXAMPLE
+  $ sfdx sfcraft:allure:report -i 7070000000001
+```
+
+_See code: [lib/commands/sfcraft/allure/apex/report.js](https://github.com/nchursin/sfdx-allure/blob/v0.0.0/lib/commands/sfcraft/allure/apex/report.js)_
 <!-- commandsstop -->
 <!-- debugging-your-plugin -->
 # Debugging your plugin
