@@ -90,7 +90,7 @@ describe("sfcraft:allure:apex:report (unit tested)", () => {
 
     asSpy(fs.renameSync).should.have.been.calledWith(
       `${tempDirName}/test-result-${testRunId}.json`,
-      `${tempDirName}/test-results.json`
+      `${tempDirName}/sf-test-results.json`
     );
     asSpy(fs.renameSync).should.have.been.calledAfter(
       asSpy(sfdxReportMock.run)
