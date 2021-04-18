@@ -1,7 +1,7 @@
 {
   "name": "sfdx-allure",
   "description": "SFDX plugin to generate Allure reports",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "author": "Nikita Chursin @nchursin",
   "bugs": "https://github.com/nchursin/sfdx-allure/issues",
   "dependencies": {
