@@ -41,13 +41,15 @@ export default class AllureReport extends SfdxCommand {
       throw new Error("Allure not found. Please verify allure installation");
     }
 
+    rimraf.sync(this.flags.outputdir);
+
     this.reportCmd.argv = [
       "-i",
       this.flags.testrunid,
       "--outputdir",
       tempDirName,
       "-r",
-      "json",
+      "human",
       "-c",
       "--loglevel",
       "fatal",
@@ -57,7 +59,7 @@ export default class AllureReport extends SfdxCommand {
 
     fs.renameSync(
       `${tempDirName}/test-result-${this.flags.testrunid}.json`,
-      `${tempDirName}/test-results.json`
+      `${tempDirName}/sf-test-results.json`
     );
 
     await cmd.run(`allure generate ${tempDirName} -o ${this.flags.outputdir}`);

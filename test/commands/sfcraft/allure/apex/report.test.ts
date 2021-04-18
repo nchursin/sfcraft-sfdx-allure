@@ -36,7 +36,7 @@ const runCommand = (cmd: SfdxCommand, args = defaultArgs) => {
 
 const sandbox = createSandbox();
 
-describe("sfcraft:allure:apex:report", () => {
+describe("sfcraft:allure:apex:report (unit tested)", () => {
   beforeEach(() => {
     commandUnderTest = new Report([], config);
     (commandUnderTest as any).reportCmd = sfdxReportMock;
@@ -72,7 +72,7 @@ describe("sfcraft:allure:apex:report", () => {
   it("stores force:apex:test:report results as json with coverage", async () => {
     await runCommand(commandUnderTest);
     expect((sfdxReportMock as any).flags).to.contain({
-      resultformat: "json",
+      resultformat: "human",
       codecoverage: true,
     });
   });
@@ -80,8 +80,8 @@ describe("sfcraft:allure:apex:report", () => {
   it("removes sfcraft-allure-tmp after execution", async () => {
     await runCommand(commandUnderTest);
 
-    asSpy(rimraf.sync).should.have.been.calledOnce;
-    asSpy(rimraf.sync).should.have.been.calledWith(tempDirName);
+    asSpy(rimraf.sync).should.have.been.called;
+    asSpy(rimraf.sync).lastCall.should.have.been.calledWith(tempDirName);
     await flushPromises();
   });
 
@@ -157,5 +157,13 @@ describe("sfcraft:allure:apex:report", () => {
         "Allure not found. Please verify allure installation"
       )
       .notify(done);
+  });
+
+  it("removes the output dir prior to execution", async () => {
+    await runCommand(commandUnderTest);
+
+    asSpy(rimraf.sync)
+      .should.be.calledWith("sfallure")
+      .and.calledBefore(asSpy(sfdxReportMock._run));
   });
 });
