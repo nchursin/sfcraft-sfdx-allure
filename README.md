@@ -3,13 +3,13 @@ SFDX Allure
 
 SFDX plugin to generate Allure reports
 
-[![Version](https://img.shields.io/npm/v/sfdx-allure.svg)](https://npmjs.org/package/sfdx-allure)
+[![Version](https://img.shields.io/npm/v/sfdx-allure.svg)](https://www.npmjs.com/package/@sfcraft/allure)
 [![CircleCI](https://circleci.com/gh/nchursin/sfdx-allure/tree/master.svg?style=shield)](https://circleci.com/gh/nchursin/sfdx-allure/tree/master)
 [![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/nchursin/sfdx-allure?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/sfdx-allure/branch/master)
 [![Codecov](https://codecov.io/gh/nchursin/sfdx-allure/branch/master/graph/badge.svg)](https://codecov.io/gh/nchursin/sfdx-allure)
 [![Greenkeeper](https://badges.greenkeeper.io/nchursin/sfdx-allure.svg)](https://greenkeeper.io/)
 [![Known Vulnerabilities](https://snyk.io/test/github/nchursin/sfdx-allure/badge.svg)](https://snyk.io/test/github/nchursin/sfdx-allure)
-[![Downloads/week](https://img.shields.io/npm/dw/sfdx-allure.svg)](https://npmjs.org/package/sfdx-allure)
+[![Downloads/week](https://img.shields.io/npm/dw/sfdx-allure.svg)](https://www.npmjs.com/package/@sfcraft/allure)
 [![License](https://img.shields.io/npm/l/sfdx-allure.svg)](https://github.com/nchursin/sfdx-allure/blob/master/package.json)
 
 <!-- toc -->
