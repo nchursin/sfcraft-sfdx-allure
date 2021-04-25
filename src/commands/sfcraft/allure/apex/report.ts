@@ -21,6 +21,7 @@ export default class AllureReport extends SfdxCommand {
     "commandDescription"
   );
   public static examples = [`$ sfdx sfcraft:allure:report -i 7070000000001`];
+  protected static requiresUsername = true;
 
   protected static flagsConfig: FlagsConfig = {
     testrunid: (SfdxReport as any).flagsConfig.testrunid,

@@ -25,7 +25,7 @@ const config: any = {};
 const sfdxReportMock: SfdxReport = new SfdxReport([], config);
 
 const testRunId = "testRunId";
-const defaultArgs = `-i ${testRunId}`;
+const defaultArgs = `-i ${testRunId} -u username@test.com`;
 
 const asSpy = (fun) => fun as SinonSpy;
 
@@ -44,6 +44,8 @@ describe("sfcraft:allure:apex:report (unit tested)", () => {
     sandbox.stub(rimraf, "sync");
     sandbox.stub(fs, "renameSync");
     sandbox.stub(cmd, "run");
+    sandbox.stub(sfdxReportMock as any, "assignOrg");
+    sandbox.stub(commandUnderTest, "assignOrg");
     (cmd.run as SinonStub).withArgs("allure --version").returns([0]);
   });
 
