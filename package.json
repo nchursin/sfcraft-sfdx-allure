@@ -90,6 +90,8 @@
     "version": "oclif-dev readme && git add README.md",
     "debug": "NODE_OPTIONS=--inspect-brk bin/run",
     "predebug": "yarn compile",
-    "preversion": "yarn test"
+    "preversion": "yarn test",
+    "presf:link": "sfdx plugins:unlink && yarn pack",
+    "sf:link": "sfdx plugins:link"
   }
 }
