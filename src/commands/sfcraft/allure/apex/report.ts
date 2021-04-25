@@ -1,4 +1,3 @@
-// import { flags, SfdxCommand } from "@salesforce/command";
 import { FlagsConfig, SfdxCommand } from "@salesforce/command";
 import { Messages } from "@salesforce/core";
 import { AnyJson } from "@salesforce/ts-types";

@@ -6,6 +6,7 @@
       "options": "double"
     },
     "ordered-imports": false,
+    "arrow-parens": true,
     "trailing-comma": [
       true,
       {

@@ -1,8 +1,5 @@
-// import { ensureJsonMap, ensureString } from "@salesforce/ts-types";
 import SfdxReport from "@salesforce/plugin-apex/lib/commands/force/apex/test/report";
-import Report, {
-  tempDirName,
-} from "../../../../../src/commands/sfcraft/allure/apex/report";
+import Report, { tempDirName } from "@src/commands/sfcraft/allure/apex/report";
 import * as chai from "chai";
 import { expect } from "chai";
 import * as sinonChai from "sinon-chai";
@@ -17,6 +14,7 @@ chai.use(chaiAsPromised);
 chai.should();
 chai.use(sinonChai);
 
+// tslint:disable-next-line: no-string-based-set-immediate
 const flushPromises = () => new Promise((resolve) => setImmediate(resolve));
 
 let commandUnderTest;
@@ -29,9 +27,9 @@ const defaultArgs = `-i ${testRunId} -u username@test.com`;
 
 const asSpy = (fun) => fun as SinonSpy;
 
-const runCommand = (cmd: SfdxCommand, args = defaultArgs) => {
-  cmd.argv = args.split(" ");
-  return cmd._run();
+const runCommand = (command: SfdxCommand, args = defaultArgs) => {
+  command.argv = args.split(" ");
+  return command._run();
 };
 
 const sandbox = createSandbox();
@@ -54,13 +52,14 @@ describe("sfcraft:allure:apex:report (unit tested)", () => {
   });
 
   it("calls force:apex:test:report to get report", async () => {
-    const testRunId = "7070000000001";
+    const testrunid = "7070000000001";
 
-    await runCommand(commandUnderTest, `-i ${testRunId}`);
+    await runCommand(commandUnderTest, `-i ${testrunid}`);
 
+    // tslint:disable-next-line: no-unused-expression
     asSpy(sfdxReportMock.run).should.have.been.called;
     expect((sfdxReportMock as any).flags).to.contain({
-      testrunid: testRunId,
+      testrunid,
     });
   });
 
@@ -82,6 +81,7 @@ describe("sfcraft:allure:apex:report (unit tested)", () => {
   it("removes sfcraft-allure-tmp after execution", async () => {
     await runCommand(commandUnderTest);
 
+    // tslint:disable-next-line: no-unused-expression
     asSpy(rimraf.sync).should.have.been.called;
     asSpy(rimraf.sync).lastCall.should.have.been.calledWith(tempDirName);
     await flushPromises();

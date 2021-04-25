@@ -4,7 +4,13 @@
     "declaration": true,
     "outDir": "./lib",
     "importHelpers": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "@src/*": ["*"],
+      "@lib/*": ["lib/*"]
+    }
   },
   "include": [
     "./src/**/*"
