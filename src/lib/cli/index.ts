@@ -1,3 +1,4 @@
+import { Command } from "@src/command";
 import * as cp from "child_process";
 
 import { Argument } from "./arguments";
@@ -12,7 +13,7 @@ const execPromise = (command: string) =>
     })
   );
 
-export class Command {
+export class CLICommand implements Command {
   private command: string;
   private args: Argument[];
 
