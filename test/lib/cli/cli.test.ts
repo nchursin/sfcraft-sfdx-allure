@@ -11,7 +11,7 @@ chai.use(chaiAsPromised);
 chai.should();
 chai.use(sinonChai);
 
-const asSpy = (fun: Function) => fun as SinonSpy;
+const asSpy = (fun) => fun as SinonSpy;
 
 describe("Command", () => {
   const sandbox = createSandbox();

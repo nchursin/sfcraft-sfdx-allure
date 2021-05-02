@@ -5,6 +5,7 @@ import SfdxReport from "@salesforce/plugin-apex/lib/commands/force/apex/test/rep
 import * as rimraf from "rimraf";
 import * as fs from "fs";
 import * as cmd from "node-run-cmd";
+import { exec } from "child_process";
 
 // Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
@@ -35,35 +36,39 @@ export default class AllureReport extends SfdxCommand {
   protected reportCmd = new SfdxReport([], this.sfdxReportConfig);
 
   public async run(): Promise<AnyJson> {
-    const [error] = await cmd.run("allure --version");
-    if (error) {
-      throw new Error("Allure not found. Please verify allure installation");
-    }
+    // console.log(">>>");
+    // const [error] = await cmd.run("allure --version");
+    // if (error) {
+    //   throw new Error("Allure not found. Please verify allure installation");
+    // }
 
-    rimraf.sync(this.flags.outputdir);
+    // rimraf.sync(this.flags.outputdir);
 
-    this.reportCmd.argv = [
-      "-i",
-      this.flags.testrunid,
-      "--outputdir",
-      tempDirName,
-      "-r",
-      "human",
-      "-c",
-      "--loglevel",
-      "fatal",
-    ];
+    // this.reportCmd.argv = [
+    //   "-i",
+    //   this.flags.testrunid,
+    //   "--outputdir",
+    //   tempDirName,
+    //   "-r",
+    //   "human",
+    //   "-c",
+    //   "--loglevel",
+    //   "fatal",
+    // ];
 
-    await this.reportCmd._run();
+    // await this.reportCmd._run();
 
-    fs.renameSync(
-      `${tempDirName}/test-result-${this.flags.testrunid}.json`,
-      `${tempDirName}/sf-test-results.json`
-    );
+    // fs.renameSync(
+    //   `${tempDirName}/test-result-${this.flags.testrunid}.json`,
+    //   `${tempDirName}/sf-test-results.json`
+    // );
 
-    await cmd.run(`allure generate ${tempDirName} -o ${this.flags.outputdir}`);
+    // const result = await execPromise(
+    //   `allure generate ${tempDirName} -o ${this.flags.outputdir}`
+    // );
+    // console.log("result >> ", result);
 
-    rimraf.sync(tempDirName);
+    // rimraf.sync(tempDirName);
 
     return;
   }

@@ -15,8 +15,8 @@ chai.use(sinonChai);
 
 const { todo } = test;
 
-const asSpy = (fun: Function) => fun as SinonSpy;
-const asStub = (fun: Function) => fun as SinonStub;
+const asSpy = (fun) => fun as SinonSpy;
+const asStub = (fun) => fun as SinonStub;
 
 describe("Allure API", () => {
   const sandbox = createSandbox();
